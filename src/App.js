@@ -60,11 +60,18 @@ function App() {
   };
 
   return (
-    <div
-      className="App"
-      onClick={handleShowIcons}
-      style={{ backgroundImage: `url("${config.images[imageIndex]}")` }}
-    >
+    <div className="App" onClick={handleShowIcons}>
+      {config.images.map((x, index) => (
+        <div
+          key={`background-image-${index}`}
+          className="Background-image"
+          style={{
+            backgroundImage: `url("${x}")`,
+            display: index === imageIndex ? "block" : "none",
+          }}
+        ></div>
+      ))}
+
       <div className="Dash">
         <img
           src="/loader.svg"
