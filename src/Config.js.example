@@ -1,0 +1,8 @@
+const config = {
+  displayImageForMs: 15000,
+  imageTransitionMs: 800,
+  images: [],
+  apps: [],
+};
+
+export default config;

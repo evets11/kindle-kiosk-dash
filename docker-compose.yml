@@ -1,0 +1,22 @@
+version: '3'
+services:
+  # nginx service
+  webserver:
+    image: nginx:alpine
+    container_name: kindle_kiosk_dash_webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - '${PORT:-8181}:80'
+    environment:
+      - NGINX_HOST=localhost
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network
+
+# docker networks
+networks:
+  app-network:
+    driver: bridge
