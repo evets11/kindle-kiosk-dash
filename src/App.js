@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import config from './Config'
+import config from "./Config";
 
 const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -10,7 +10,9 @@ function App() {
   const [imageIndex, setImageIndex] = useState(0);
   const [imageFade, setImageFade] = useState(1);
   const [showIcons, setShowIcons] = useState(false);
-  const [showIconsTimeout, setShowIconsTimeout] = useState(null)
+  const [showIconsTimeout, setShowIconsTimeout] = useState(null);
+  const [dashIconClicked, setDashIconClicked] = useState(false);
+  const [dashIconClickedTimeout, setDashIconClickedTimeout] = useState(null);
 
   useEffect(() => {
     const handleImageIndex = async () => {
@@ -29,15 +31,32 @@ function App() {
     handleImageIndex();
   }, []);
 
-  const handleShowIcons = async () => {
-    clearTimeout(showIconsTimeout)
+  const handleShowIcons = () => {
+    clearTimeout(showIconsTimeout);
 
     if (!showIcons) {
       setShowIcons(true);
-      setShowIconsTimeout(setTimeout(() => {setShowIcons(false)}, 5000))
+      setShowIconsTimeout(
+        setTimeout(() => {
+          setShowIcons(false);
+        }, 5000)
+      );
     } else {
       setShowIcons(false);
     }
+  };
+
+  const handleIconClicked = () => {
+    clearTimeout(dashIconClickedTimeout);
+    setDashIconClicked(true);
+
+    // if the redirect doesn't work stop showing the loading icon
+    setDashIconClickedTimeout(
+      setTimeout(() => {
+        setDashIconClicked(false);
+        handleShowIcons();
+      }, 10000)
+    );
   };
 
   return (
@@ -46,17 +65,28 @@ function App() {
       onClick={handleShowIcons}
       style={{ backgroundImage: `url("${config.images[imageIndex]}")` }}
     >
-      {showIcons && (
-        <div className="Dash">
+      <div className="Dash">
+        <img
+          src="/loader.svg"
+          alt="Loader"
+          style={{ display: dashIconClicked ? "block" : "none" }}
+        />
+
+        {showIcons && !dashIconClicked && (
           <div className="Dash-items">
             {config.apps.map((x) => (
               <a key={x.label} href={x.href}>
-                <img className="Dash-icon" src={x.iconUrl} alt={x.label} />
+                <img
+                  className="Dash-icon"
+                  src={x.iconUrl}
+                  alt={x.label}
+                  onClick={handleIconClicked}
+                />
               </a>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <div
         className="Image-fade"
