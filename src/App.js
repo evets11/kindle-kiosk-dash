@@ -10,6 +10,7 @@ function App() {
   const [imageIndex, setImageIndex] = useState(0);
   const [imageFade, setImageFade] = useState(1);
   const [showIcons, setShowIcons] = useState(false);
+  const [showIconsTimeout, setShowIconsTimeout] = useState(null)
 
   useEffect(() => {
     const handleImageIndex = async () => {
@@ -29,10 +30,11 @@ function App() {
   }, []);
 
   const handleShowIcons = async () => {
+    clearTimeout(showIconsTimeout)
+
     if (!showIcons) {
       setShowIcons(true);
-      await sleep(8000);
-      setShowIcons(false);
+      setShowIconsTimeout(setTimeout(() => {setShowIcons(false)}, 5000))
     } else {
       setShowIcons(false);
     }
@@ -48,7 +50,7 @@ function App() {
         <div className="Dash">
           <div className="Dash-items">
             {config.apps.map((x) => (
-              <a href={x.href}>
+              <a key={x.label} href={x.href}>
                 <img className="Dash-icon" src={x.iconUrl} alt={x.label} />
               </a>
             ))}
