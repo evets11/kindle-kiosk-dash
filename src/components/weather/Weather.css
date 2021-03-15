@@ -1,0 +1,17 @@
+.Container {
+  display: grid;
+  grid-template-columns: 3fr 9fr;
+  font-size: 1.3rem;
+}
+
+.Info-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 30px;
+}
+
+.Title {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+}

@@ -8,6 +8,8 @@ This was created to be used as the start page for Fully Kiosk Browser on a kindl
 
 Clone the repo and run `yarn install`.
 
+Copy the example .env file to create your own `cp .env.example .example` and update values
+
 Copy the example config file to create your own `cp Config.js.example Config.js`
 
 Within the config file you can enter the paths to your photos and apps. To get the URL for apps you can use intents, the simplest way to get this is to go into Fully Kiosk Browser -> Settings -> Kiosk Mode -> Single App Mode -> Select an app and copy the URL it gives and turn off single app mode again.
@@ -25,7 +27,7 @@ apps: [
 ]
 ```
 
-Run `npm run build`
+Run `yarn build`
 
 You can then serve the build directory using a webserver yourself or use included docker compose file to serve using the the nginx docker image on port 8181
 

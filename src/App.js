@@ -1,35 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
+import BackgroundImages from "./components/background-images/BackgroundImages";
+import Icon from "./components/icon/Icon";
+import Loader from "./components/loader/Loader";
+import Weather from "./components/weather/Weather";
 import config from "./Config";
 
-const sleep = (ms) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
-
 function App() {
-  const [imageIndex, setImageIndex] = useState(0);
-  const [imageFade, setImageFade] = useState(1);
   const [showIcons, setShowIcons] = useState(false);
   const [showIconsTimeout, setShowIconsTimeout] = useState(null);
   const [dashIconClicked, setDashIconClicked] = useState(false);
   const [dashIconClickedTimeout, setDashIconClickedTimeout] = useState(null);
-
-  useEffect(() => {
-    const handleImageIndex = async () => {
-      setImageFade(0);
-      setImageIndex((imageIndex) => {
-        const newImageIndex = imageIndex + 1;
-        return newImageIndex >= config.images.length ? 0 : newImageIndex;
-      });
-
-      await sleep(config.displayImageForMs);
-      setImageFade(1);
-      await sleep(config.imageTransitionMs * 1.1);
-      handleImageIndex();
-    };
-
-    handleImageIndex();
-  }, []);
 
   const handleShowIcons = () => {
     clearTimeout(showIconsTimeout);
@@ -39,7 +20,7 @@ function App() {
       setShowIconsTimeout(
         setTimeout(() => {
           setShowIcons(false);
-        }, 5000)
+        }, 200000000000000)
       );
     } else {
       setShowIcons(false);
@@ -55,53 +36,40 @@ function App() {
       setTimeout(() => {
         setDashIconClicked(false);
         handleShowIcons();
-      }, 10000)
+      }, 1000)
     );
   };
 
   return (
     <div className="App" onClick={handleShowIcons}>
-      {config.images.map((x, index) => (
-        <div
-          key={`background-image-${index}`}
-          className="Background-image"
-          style={{
-            backgroundImage: `url("${x}")`,
-            display: index === imageIndex ? "block" : "none",
-          }}
-        ></div>
-      ))}
+      <BackgroundImages />
 
       <div className="Dash">
-        <img
-          src="/loader.svg"
-          alt="Loader"
-          style={{ display: dashIconClicked ? "block" : "none" }}
-        />
+        <Loader display={dashIconClicked} />
 
         {showIcons && !dashIconClicked && (
-          <div className="Dash-items">
-            {config.apps.map((x) => (
-              <a key={x.label} href={x.href}>
-                <img
-                  className="Dash-icon"
-                  src={x.iconUrl}
-                  alt={x.label}
-                  onClick={handleIconClicked}
-                />
-              </a>
-            ))}
+          <div>
+            <div className="Dash-icons">
+              <Weather />
+            </div>
+
+            <div className="Dash-icons">
+              {config.apps.map((x) => (
+                <a key={x.label} href={x.href}>
+                  <Icon>
+                    <img
+                      className="App-icon"
+                      src={x.iconUrl}
+                      alt={x.label}
+                      onClick={handleIconClicked}
+                    />
+                  </Icon>
+                </a>
+              ))}
+            </div>
           </div>
         )}
       </div>
-
-      <div
-        className="Image-fade"
-        style={{
-          opacity: imageFade,
-          transition: `opacity ${config.imageTransitionMs}ms ease-in-out`,
-        }}
-      />
     </div>
   );
 }

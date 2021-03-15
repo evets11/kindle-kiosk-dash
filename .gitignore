@@ -23,4 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # config
+.env
 Config.js
+public/env.js
