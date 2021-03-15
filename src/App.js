@@ -20,7 +20,7 @@ function App() {
       setShowIconsTimeout(
         setTimeout(() => {
           setShowIcons(false);
-        }, 30000)
+        }, 60000)
       );
     } else {
       setShowIcons(false);

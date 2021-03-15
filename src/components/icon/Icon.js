@@ -1,8 +1,21 @@
+import PropTypes from "prop-types";
 import React from "react";
 import "./Icon.css";
 
-function Icon(props) {
-  return <div className="Icon">{props.children}</div>;
+function Icon({style, children}) {
+  return (
+    <div className="Icon" style={{ ...style }}>
+      {children}
+    </div>
+  );
 }
+
+Icon.propTypes = {
+  style: PropTypes.object,
+};
+
+Icon.defaultProps = {
+  style: {},
+};
 
 export default Icon;

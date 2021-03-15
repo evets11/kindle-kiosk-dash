@@ -24,7 +24,7 @@ function Weather() {
   useEffect(() => {
     const fetchWeather = async () => {
       const res = await fetch(
-        `http://api.openweathermap.org/data/2.5/weather?q=London,uk&units=metric&appid=${env.OPEN_WEATHER_API_KEY}`
+        `http://api.openweathermap.org/data/2.5/onecall?lat=${env.OPEN_WEATHER_LAT}&lon=${env.OPEN_WEATHER_LON}&units=metric&exclude=minutely,hourly,alerts&appid=${env.OPEN_WEATHER_API_KEY}`
       );
       const decoded = await res.json();
       await sleep(500);
@@ -34,38 +34,66 @@ function Weather() {
     fetchWeather();
   }, []);
 
+  if (!weather) {
+    return (
+      <Icon>
+        <Loader />
+      </Icon>
+    );
+  }
+
   return (
-    <Icon>
-      {weather ? (
-        <div className="Container">
-          <img
-            src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-            alt="Weather"
-          />
+    <div style={{ display: "flex" }}>
+      <WeatherIcon
+        icon={weather.current.weather[0].icon}
+        description={weather.current.weather[0].description}
+        temp={weather.current.temp}
+        feelsLike={weather.current.feels_like}
+        max={weather.daily[0].temp.max}
+        min={weather.daily[0].temp.min}
+      />
+
+      <WeatherIcon
+        icon={weather.daily[1].weather[0].icon}
+        description={weather.daily[1].weather[0].description}
+        max={weather.daily[1].temp.max}
+        min={weather.daily[1].temp.min}
+      />
+    </div>
+  );
+}
+
+function WeatherIcon({ icon, description, temp, feelsLike, max, min }) {
+  return (
+    <Icon style={{ alignItems: "flex-start" }}>
+      <div className="Container">
+        <img
+          src={`http://openweathermap.org/img/wn/${icon}@2x.png`}
+          alt="Today's weather"
+        />
+
+        <div>
+          <div className="Title">{capitalise(description)}</div>
 
           <div>
-            <div className="Title">
-              {capitalise(weather.weather[0].description)}
-            </div>
-
-            <div className="Info-container">
-              <div>
-                Current: {weather.main.temp} &#8451;
+            {temp && (
+              <React.Fragment>
+                Current: {Math.round(temp)} &#8451;
                 <br />
-                Feels Like: {weather.main.feels_like} &#8451;
-              </div>
-
-              <div>
-                High: {weather.main.temp_max} &#8451;
+              </React.Fragment>
+            )}
+            {temp && (
+              <React.Fragment>
+                Feels Like: {Math.round(feelsLike)} &#8451;
                 <br />
-                Low: {weather.main.temp_min} &#8451;
-              </div>
-            </div>
+              </React.Fragment>
+            )}
+            High: {Math.round(max)} &#8451;
+            <br />
+            Low: {Math.round(min)} &#8451;
           </div>
         </div>
-      ) : (
-        <Loader />
-      )}
+      </div>
     </Icon>
   );
 }
