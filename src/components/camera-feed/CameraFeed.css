@@ -8,7 +8,7 @@
 
 .CameraIframe {
   position: relative;
-  width: 800px;
-  height: 800px;
+  width: 640px;
+  height: 480px;
   z-index: 99999;
 }
