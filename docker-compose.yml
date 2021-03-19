@@ -3,7 +3,7 @@ services:
   # nginx service
   webserver:
     image: nginx:alpine
-    container_name: kindle_kiosk_dash_webserver
+    container_name: kindle-kiosk-dash-webserver
     restart: unless-stopped
     tty: true
     ports:

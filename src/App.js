@@ -1,16 +1,39 @@
-import React, { useState } from "react";
+import Pusher from "pusher-js";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import BackgroundImages from "./components/background-images/BackgroundImages";
+import CameraFeed from "./components/camera-feed/CameraFeed";
 import Icon from "./components/icon/Icon";
 import Loader from "./components/loader/Loader";
 import Weather from "./components/weather/Weather";
 import config from "./Config";
+import env from "react-dotenv";
 
 function App() {
   const [showIcons, setShowIcons] = useState(false);
   const [showIconsTimeout, setShowIconsTimeout] = useState(null);
   const [dashIconClicked, setDashIconClicked] = useState(false);
   const [dashIconClickedTimeout, setDashIconClickedTimeout] = useState(null);
+  const [cameraFeedUrl, setCameraFeedUrl] = useState();
+  const [cameraFeedUrlTimeout, setCameraFeedUrlTimeout] = useState(null);
+
+  useEffect(() => {
+    var pusher = new Pusher(env.PUSHER_KEY, {
+      cluster: "eu",
+    });
+
+    const channel = pusher.subscribe("cameras");
+    channel.bind("motion-feed", (data) => {
+      clearTimeout(cameraFeedUrlTimeout);
+      setCameraFeedUrl(data.url);
+
+      setCameraFeedUrlTimeout(
+        setTimeout(() => {
+          setCameraFeedUrl("");
+        }, 30000)
+      );
+    });
+  }, [cameraFeedUrlTimeout]);
 
   const handleShowIcons = () => {
     clearTimeout(showIconsTimeout);
@@ -43,6 +66,8 @@ function App() {
   return (
     <div className="App" onClick={handleShowIcons}>
       <BackgroundImages />
+
+      {cameraFeedUrl && <CameraFeed url={cameraFeedUrl} />}
 
       <div className="Dash">
         <Loader display={dashIconClicked} />
