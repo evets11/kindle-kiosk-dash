@@ -1,6 +1,7 @@
 import Pusher from "pusher-js";
 import React, { useEffect, useState } from "react";
 import env from "react-dotenv";
+import useSound from "use-sound";
 import "./App.css";
 import BackgroundImages from "./components/background-images/BackgroundImages";
 import CameraFeed from "./components/camera-feed/CameraFeed";
@@ -8,6 +9,7 @@ import Icon from "./components/icon/Icon";
 import Loader from "./components/loader/Loader";
 import Weather from "./components/weather/Weather";
 import config from "./Config";
+import doorbell from "./sounds/doorbell.mp3";
 
 function App() {
   const [showIcons, setShowIcons] = useState(false);
@@ -15,6 +17,7 @@ function App() {
   const [dashIconClicked, setDashIconClicked] = useState(false);
   const [dashIconClickedTimeout, setDashIconClickedTimeout] = useState(null);
   const [cameraFeedUrl, setCameraFeedUrl] = useState();
+  const [playDoorbell] = useSound(doorbell);
 
   useEffect(() => {
     var pusher = new Pusher(env.PUSHER_KEY, {
@@ -30,12 +33,13 @@ function App() {
     const channel = pusher.subscribe("cameras");
     channel.bind("motion-feed", (data) => {
       setCameraFeedUrl(data.url);
+      env.SOUNDS && playDoorbell();
 
       setTimeout(() => {
         setCameraFeedUrl("");
       }, 30000);
     });
-  }, []);
+  }, [playDoorbell]);
 
   const handleShowIcons = () => {
     clearTimeout(showIconsTimeout);
