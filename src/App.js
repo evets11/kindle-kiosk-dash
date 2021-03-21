@@ -9,7 +9,7 @@ import Icon from "./components/icon/Icon";
 import Loader from "./components/loader/Loader";
 import Weather from "./components/weather/Weather";
 import config from "./Config";
-import doorbell from "./sounds/doorbell.mp3";
+import alertSound from "./sounds/alert.mp3";
 
 function App() {
   const [showIcons, setShowIcons] = useState(false);
@@ -17,7 +17,7 @@ function App() {
   const [dashIconClicked, setDashIconClicked] = useState(false);
   const [dashIconClickedTimeout, setDashIconClickedTimeout] = useState(null);
   const [cameraFeedUrl, setCameraFeedUrl] = useState();
-  const [playDoorbell] = useSound(doorbell);
+  const [playAlertSound] = useSound(alertSound);
 
   useEffect(() => {
     var pusher = new Pusher(env.PUSHER_KEY, {
@@ -33,13 +33,13 @@ function App() {
     const channel = pusher.subscribe("cameras");
     channel.bind("motion-feed", (data) => {
       setCameraFeedUrl(data.url);
-      env.SOUNDS && playDoorbell();
+      env.SOUNDS && playAlertSound();
 
       setTimeout(() => {
         setCameraFeedUrl("");
       }, 30000);
     });
-  }, [playDoorbell]);
+  }, [playAlertSound]);
 
   const handleShowIcons = () => {
     clearTimeout(showIconsTimeout);
